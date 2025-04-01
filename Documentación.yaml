@@ -1,0 +1,92 @@
+openapi: 3.0.4
+info:
+  title: Biblioteca - OpenAPI 3.0
+  description: |-
+    Esta API se encargará del manejo de procesos dentro de una biblioteca.
+  version: 1.0.12
+servers:
+  - url: http://localhost:5000
+tags:
+  - name: User
+    description: Manejo de la información relacionada con los usuarios.
+    
+paths:
+  /register:
+    register:
+      tags:
+      - User
+      summary: Registra la información de un nuevo usuario único
+      requestBody:
+        content:
+          aplication/json:
+            schema:
+              $ref: '#/components/schemas/BodyUserRegister'
+        required: true
+      responses:
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized' 
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+  /login:
+    login:
+      tags:
+      - User
+      summary: Permite el inicio de sesión de un usuario registrado.
+      credentials:
+        content:
+          aplication/jason:
+            schema:
+              $ref: '#/components/schemas/BodyUserLogin'
+              
+    
+    
+components:
+  responses:
+    Unauthorized:
+      description: (Unauthorized) No hay autorizacion para llamar al servicio
+    NotFound:
+      description: (NotFound) No se encontro informacion 
+    BadRequest:
+      description: (Bad Request) Los datos enviados son incorrectos o hay datos obligatorios no enviados
+    ServerError:
+      description: Error en servidor
+  schemas:
+    BodyUserRegister:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Nombre del usuario
+        correo:
+          type: string
+          description: Correo electrónico del usuario
+        contraseña:
+          type: string
+          description: Contraseña del usuario
+        rol_id:
+          type: integer
+          description: Identificador del rol del usuario en la biblioteca
+    BodyUserLogin:
+      type: object
+      properties:
+        correo:
+          type: string
+          description: Correo electrónico del usuario
+        contraseña:
+          type: string
+          description: Contraseña del usuario
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
