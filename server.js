@@ -24,5 +24,32 @@ sequelize.sync()
     .then(() => console.log("🟢 Base de datos sincronizada"))
     .catch(err => console.error("🔴 Error al sincronizar la base de datos:", err));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🟢 Servidor corriendo en puerto ${PORT}`));
+
+// Importar rutas
+const usuariosRoutes = require("./routes/usuarios.routes");
+const librosRoutes = require("./routes/libros.routes");
+
+// Usar rutas
+app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/libros", librosRoutes);
+
+// Configuración de Swagger
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "API Biblioteca",
+            version: "1.0.0",
+            description: "API REST para la gestión de una biblioteca"
+        }
+    },
+    apis: ["./src/routes/*.js"]
+};
+
+const specs = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
