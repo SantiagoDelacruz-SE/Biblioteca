@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Asegúrate de tener la conexión a la BD en db.js
+const pool = require('../config/database'); // Asegúrate de tener la conexión a la BD en db.js
 
 // Obtener todos los préstamos
 router.get('/', async (req, res) => {

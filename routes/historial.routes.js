@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Conexión a la base de datos
+const pool = require('../config/database'); // Conexión a la base de datos
 
 // Obtener todo el historial de préstamos
 router.get('/', async (req, res) => {
