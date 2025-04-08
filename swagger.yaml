@@ -8,6 +8,105 @@ servers:
   - url: http://localhost:5000/api
 
 paths:
+  /usuarios:
+    get:
+      summary: Obtener todos los usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+    post:
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+                - correo
+                - contrasena
+                - rol_id
+                - estado
+              properties:
+                nombre:
+                  type: string
+                correo:
+                  type: string
+                contrasena:
+                  type: string
+                rol_id:
+                  type: integer
+                estado:
+                  type: string
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+
+  /usuarios/{id}:
+    get:
+      summary: Obtener un usuario por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario encontrado
+        '404':
+          description: Usuario no encontrado
+    put:
+      summary: Actualizar un usuario existente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+                - correo
+                - contrasena
+                - rol_id
+                - estado
+              properties:
+                nombre:
+                  type: string
+                correo:
+                  type: string
+                contrasena:
+                  type: string
+                rol_id:
+                  type: integer
+                estado:
+                  type: string
+      responses:
+        '200':
+          description: Usuario actualizado exitosamente
+        '404':
+          description: Usuario no encontrado
+    delete:
+      summary: Eliminar un usuario
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Usuario eliminado exitosamente
+        '404':
+          description: Usuario no encontrado
+
   /autores:
     get:
       summary: Obtener todos los autores
@@ -44,9 +143,29 @@ paths:
         '404':
           description: Autor no encontrado
 
-  /libros:
+  /categorias:
+    get:
+      summary: Obtener todas las categorías
+      tags:
+        - Categorías
+      responses:
+        '200':
+          description: Lista de categorías
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nombre:
+                      type: string
     post:
-      summary: Crear un nuevo libro
+      summary: Crear una nueva categoría
+      tags:
+        - Categorías
       requestBody:
         required: true
         content:
@@ -54,16 +173,375 @@ paths:
             schema:
               type: object
               properties:
-                titulo:
+                nombre:
                   type: string
-                autor_id:
-                  type: integer
-                categoria_id:
-                  type: integer
-                isbn:
-                  type: string
-                anio_publicacion:
-                  type: integer
+                  example: Historia
       responses:
         '201':
-          description: Libro creado
+          description: Categoría creada exitosamente
+        '400':
+          description: El campo nombre es obligatorio
+
+  /categorias/{id}:
+    put:
+      summary: Actualizar una categoría
+      tags:
+        - Categorías
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Literatura
+      responses:
+        '200':
+          description: Categoría actualizada correctamente
+        '400':
+          description: El campo nombre es obligatorio
+        '404':
+          description: Categoría no encontrada
+    delete:
+      summary: Eliminar una categoría
+      tags:
+        - Categorías
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Categoría eliminada correctamente
+        '404':
+          description: Categoría no encontrada
+
+  /libros:
+    get:
+      summary: Obtener todos los libros
+      tags:
+        - Libros
+      responses:
+        '200':
+          description: Lista de libros
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    titulo:
+                      type: string
+                    autor_id:
+                      type: integer
+                    categoria_id:
+                      type: integer
+                    isbn:
+                      type: string
+                    anio_publicacion:
+                      type: integer
+                    autor_nombre:
+                      type: string
+                    categoria_nombre:
+                      type: string
+    post:
+      summary: Crear un nuevo libro
+      tags:
+        - Libros
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - titulo
+              properties:
+                titulo:
+                  type: string
+                  example: "Cien años de soledad"
+                autor_id:
+                  type: integer
+                  example: 1
+                categoria_id:
+                  type: integer
+                  example: 2
+                isbn:
+                  type: string
+                  example: "978-3-16-148410-0"
+                anio_publicacion:
+                  type: integer
+                  example: 1967
+      responses:
+        '201':
+          description: Libro creado exitosamente
+        '400':
+          description: El campo 'titulo' es obligatorio
+
+  /libros/{id}:
+    delete:
+      summary: Eliminar un libro
+      tags:
+        - Libros
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Libro eliminado correctamente
+        '404':
+          description: Libro no encontrado
+
+  /prestamos:
+    get:
+      summary: Obtener todos los préstamos
+      tags:
+        - Préstamos
+      responses:
+        '200':
+          description: Lista de préstamos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    usuario_id:
+                      type: string
+                    libro_id:
+                      type: integer
+                    fecha_prestamo:
+                      type: string
+                      format: date
+                    fecha_devolucion:
+                      type: string
+                      format: date
+                    devuelto:
+                      type: boolean
+    post:
+      summary: Crear un nuevo préstamo
+      tags:
+        - Préstamos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - usuario_id
+                - libro_id
+                - fecha_prestamo
+              properties:
+                usuario_id:
+                  type: string
+                  example: "1a2b3c4d"
+                libro_id:
+                  type: integer
+                  example: 10
+                fecha_prestamo:
+                  type: string
+                  format: date
+                  example: "2025-04-08"
+                fecha_devolucion:
+                  type: string
+                  format: date
+                  example: "2025-04-15"
+                devuelto:
+                  type: boolean
+                  example: false
+      responses:
+        '201':
+          description: Préstamo creado exitosamente
+
+  /prestamos/{id}:
+    put:
+      summary: Actualizar un préstamo
+      tags:
+        - Préstamos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fecha_devolucion:
+                  type: string
+                  format: date
+                  example: "2025-04-15"
+                devuelto:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Préstamo actualizado correctamente
+        '404':
+          description: Préstamo no encontrado
+    delete:
+      summary: Eliminar un préstamo
+      tags:
+        - Préstamos
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Préstamo eliminado correctamente
+        '404':
+          description: Préstamo no encontrado
+
+  /multas:
+    get:
+      summary: Obtener todas las multas
+      tags:
+        - Multas
+      responses:
+        '200':
+          description: Lista de multas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    usuario_id:
+                      type: string
+                    monto:
+                      type: number
+                      format: float
+                    motivo:
+                      type: string
+                    fecha:
+                      type: string
+                      format: date
+                    pagado:
+                      type: boolean
+
+    post:
+      summary: Crear una nueva multa
+      tags:
+        - Multas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - usuario_id
+                - monto
+                - motivo
+              properties:
+                usuario_id:
+                  type: string
+                  example: "1a2b3c"
+                monto:
+                  type: number
+                  format: float
+                  example: 5000
+                motivo:
+                  type: string
+                  example: "Retraso en la devolución"
+                fecha:
+                  type: string
+                  format: date
+                  example: "2025-04-08"
+                pagado:
+                  type: boolean
+                  example: false
+      responses:
+        '201':
+          description: Multa creada correctamente
+
+  /multas/{id}:
+    get:
+      summary: Obtener una multa por ID
+      tags:
+        - Multas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Multa encontrada
+        '404':
+          description: Multa no encontrada
+
+    put:
+      summary: Actualizar el estado de pago de una multa
+      tags:
+        - Multas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pagado
+              properties:
+                pagado:
+                  type: boolean
+                  example: true
+      responses:
+        '200':
+          description: Multa actualizada correctamente
+        '404':
+          description: Multa no encontrada
+
+    delete:
+      summary: Eliminar una multa
+      tags:
+        - Multas
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Multa eliminada correctamente
+        '404':
+          description: Multa no encontrada
