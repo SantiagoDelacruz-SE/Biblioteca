@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/database'); // Asegúrate de tener la conexión a la BD en db.js
+const pool = require('../config/database');
 
 // Obtener todos los préstamos
 router.get('/', async (req, res) => {
@@ -14,11 +14,11 @@ router.get('/', async (req, res) => {
 
 // Crear un nuevo préstamo
 router.post('/', async (req, res) => {
-    const { usuario_id, ejemplar_id, fecha_prestamo, fecha_devolucion, estado } = req.body;
+    const { usuario_id, libro_id, fecha_prestamo, fecha_devolucion, devuelto } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO prestamos (usuario_id, ejemplar_id, fecha_prestamo, fecha_devolucion, estado) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [usuario_id, ejemplar_id, fecha_prestamo, fecha_devolucion, estado]
+            'INSERT INTO prestamos (usuario_id, libro_id, fecha_prestamo, fecha_devolucion, devuelto) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [usuario_id, libro_id, fecha_prestamo, fecha_devolucion, devuelto ?? false]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -29,11 +29,11 @@ router.post('/', async (req, res) => {
 // Actualizar un préstamo
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { fecha_devolucion, estado } = req.body;
+    const { fecha_devolucion, devuelto } = req.body;
     try {
         const result = await pool.query(
-            'UPDATE prestamos SET fecha_devolucion = $1, estado = $2 WHERE id = $3 RETURNING *',
-            [fecha_devolucion, estado, id]
+            'UPDATE prestamos SET fecha_devolucion = $1, devuelto = $2 WHERE id = $3 RETURNING *',
+            [fecha_devolucion, devuelto, id]
         );
         res.json(result.rows[0]);
     } catch (error) {

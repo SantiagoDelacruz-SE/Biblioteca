@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/database'); // Conexión a la base de datos
+const pool = require('../config/database');
 
 // Obtener todas las multas
 router.get('/', async (req, res) => {
@@ -28,11 +28,11 @@ router.get('/:id', async (req, res) => {
 
 // Crear una nueva multa
 router.post('/', async (req, res) => {
-    const { usuario_id, monto, fecha_generada, estado } = req.body;
+    const { usuario_id, monto, motivo, fecha, pagado } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO multas (usuario_id, monto, fecha_generada, estado) VALUES ($1, $2, $3, $4) RETURNING *',
-            [usuario_id, monto, fecha_generada, estado]
+            'INSERT INTO multas (usuario_id, monto, motivo, fecha, pagado) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [usuario_id, monto, motivo, fecha ?? new Date(), pagado ?? false]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -40,14 +40,14 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Actualizar una multa
+// Actualizar el estado de pago de una multa
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { estado } = req.body;
+    const { pagado } = req.body;
     try {
         const result = await pool.query(
-            'UPDATE multas SET estado = $1 WHERE id = $2 RETURNING *',
-            [estado, id]
+            'UPDATE multas SET pagado = $1 WHERE id = $2 RETURNING *',
+            [pagado, id]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Multa no encontrada' });
