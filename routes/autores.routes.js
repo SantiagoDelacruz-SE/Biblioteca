@@ -28,15 +28,13 @@ router.get('/:id', async (req, res) => {
 
 // Crear un nuevo autor
 router.post('/', async (req, res) => {
-    const { nombre, biografia } = req.body;
     try {
-        const result = await pool.query(
-            'INSERT INTO autores (nombre, biografia) VALUES ($1, $2) RETURNING *',
-            [nombre, biografia]
-        );
-        res.status(201).json(result.rows[0]);
+        const { nombre, biografia } = req.body;
+        const autor = await Autores.create({ nombre, biografia }); // Usa Sequelize
+        res.status(201).json(autor);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error en POST /autores:", error);
+        res.status(500).json({ error: "Error al crear autor" });
     }
 });
 

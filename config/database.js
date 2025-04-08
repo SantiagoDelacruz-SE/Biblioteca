@@ -1,13 +1,15 @@
-const { Sequelize } = require("sequelize");
-require("dotenv").config();
+const { Pool } = require("pg");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: "postgres",
-    logging: false, // Desactiva logs de SQL en consola
+const pool = new Pool({
+  user: "postgres",          // Tu usuario de PostgreSQL
+  host: "localhost",         // Host de la base de datos
+  database: "bibliotecabase",// Nombre de la nueva base de datos
+  password: "postgres", // Tu contraseña de PostgreSQL
+  port: 5432                 // Puerto por defecto de PostgreSQL
 });
 
-sequelize.authenticate()
-    .then(() => console.log("🟢 Conexión a PostgreSQL exitosa"))
-    .catch(err => console.error("🔴 Error al conectar a la base de datos:", err));
+pool.connect()
+  .then(() => console.log("🟢 Conexión a PostgreSQL exitosa"))
+  .catch(err => console.error("🔴 Error al conectar a PostgreSQL", err));
 
-module.exports = sequelize;
+module.exports = pool;
