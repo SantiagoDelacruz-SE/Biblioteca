@@ -2,54 +2,48 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
-const sequelize = require("./config/database");
-const authRoutes = require("./routes/auth.routes");
+const pool = require("./config/database");
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use((req, res, next) => {
+    console.log('📦 Body recibido:', req.body); // Muestra el body en consola
+    console.log('🔍 Headers:', req.headers['content-type']); // Verifica el Content-Type
+    next(); // Pasa al siguiente middleware
+});
+
 app.use(cors());
 app.use(helmet());
 
+// Ruta de prueba
 app.get("/", (req, res) => {
     res.send("API de Biblioteca en funcionamiento 🚀");
 });
 
-// Rutas de autenticación
-app.use("/auth", authRoutes);
-
-// Sincronizar modelos con la base de datos
-sequelize.sync()
-    .then(() => console.log("🟢 Base de datos sincronizada"))
-    .catch(err => console.error("🔴 Error al sincronizar la base de datos:", err));
-
-
-// Importar rutas
+// Importar TODAS las rutas
+const authRoutes = require("./routes/auth.routes");
 const usuariosRoutes = require("./routes/usuarios.routes");
 const librosRoutes = require("./routes/libros.routes");
+const autoresRoutes = require("./routes/autores.routes");
+const categoriasRoutes = require("./routes/categorias.routes");
+const prestamosRoutes = require("./routes/prestamos.routes");
+const multasRoutes = require("./routes/multas.routes");
 
-// Usar rutas
+// Usar rutas con prefijos lógicos
+app.use("/auth", authRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/libros", librosRoutes);
+app.use("/api/autores", autoresRoutes);
+app.use("/api/categorias", categoriasRoutes);
+app.use("/api/prestamos", prestamosRoutes);
+app.use("/api/multas", multasRoutes);
 
-// Configuración de Swagger
-const swaggerOptions = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "API Biblioteca",
-            version: "1.0.0",
-            description: "API REST para la gestión de una biblioteca"
-        }
-    },
-    apis: ["./src/routes/*.js"]
-};
 
-// const specs = swaggerJsdoc(swaggerOptions);
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
+// Iniciar servidor
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor listo en http://localhost:${PORT}`);
 });

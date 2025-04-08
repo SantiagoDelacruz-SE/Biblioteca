@@ -21,7 +21,7 @@ const register = async (req, res) => {
         const newUser = await User.create({
             nombre,
             correo,
-            contraseña_hash: hashedPassword,
+            contrasena: hashedPassword,
             rol_id,
         });
 
@@ -43,7 +43,7 @@ const login = async (req, res) => {
             return res.status(400).json({ error: "Correo o contraseña incorrectos" });
         }
 
-        const validPassword = await bcrypt.compare(contraseña, user.contraseña_hash);
+        const validPassword = await bcrypt.compare(contraseña, user.contrasena);
         if (!validPassword) {
             return res.status(400).json({ error: "Correo o contraseña incorrectos" });
         }
