@@ -3,10 +3,13 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const helmet = require("helmet");
 const pool = require("./config/database");
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 dotenv.config();
 
 const app = express();
+const swaggerDocument = YAML.load('./swagger.yaml');
 app.use(express.json());
 app.use((req, res, next) => {
     console.log('📦 Body recibido:', req.body); // Muestra el body en consola
@@ -39,7 +42,7 @@ app.use("/api/autores", autoresRoutes);
 app.use("/api/categorias", categoriasRoutes);
 app.use("/api/prestamos", prestamosRoutes);
 app.use("/api/multas", multasRoutes);
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 // Iniciar servidor

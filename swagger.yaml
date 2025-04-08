@@ -1,0 +1,69 @@
+openapi: 3.0.0
+info:
+  title: API de Biblioteca
+  description: Documentación de la API REST para el sistema de gestión de biblioteca
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000/api
+
+paths:
+  /autores:
+    get:
+      summary: Obtener todos los autores
+      responses:
+        '200':
+          description: Lista de autores
+    post:
+      summary: Crear un autor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+      responses:
+        '201':
+          description: Autor creado
+
+  /autores/{id}:
+    get:
+      summary: Obtener un autor por ID
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Autor encontrado
+        '404':
+          description: Autor no encontrado
+
+  /libros:
+    post:
+      summary: Crear un nuevo libro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                autor_id:
+                  type: integer
+                categoria_id:
+                  type: integer
+                isbn:
+                  type: string
+                anio_publicacion:
+                  type: integer
+      responses:
+        '201':
+          description: Libro creado
