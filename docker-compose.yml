@@ -9,7 +9,7 @@ services:
       - PORT=5000
       - JWT_SECRET=123
       - JWT_EXPIRES_IN=1d
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/bibliotecabase
+      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/bibliotecabase
     depends_on:
       - db
     networks:
@@ -22,6 +22,7 @@ services:
     image: postgres:latest
     container_name: biblioteca-db
     environment:
+      # DATABASE_HOST: localhost
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bibliotecabase
@@ -30,6 +31,7 @@ services:
     networks:
       - biblioteca-network
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres-data:/var/lib/postgresql/data
 
 networks:
