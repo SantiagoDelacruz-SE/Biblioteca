@@ -17,6 +17,26 @@ services:
     volumes:
       - .:/usr/src/app
 
+  # Servicio Keycloak
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: biblioteca-keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - DB_VENDOR=postgres
+      - DB_ADDR=biblioteca-db
+      - DB_DATABASE=bibliotecabase
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    command: ["start-dev"]
+    depends_on:
+      - db
+    networks:
+      - biblioteca-network
+
   # Servicio para la base de datos PostgreSQL
   db:
     image: postgres:latest
