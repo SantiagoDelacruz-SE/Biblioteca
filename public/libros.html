@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biblioteca</title>
+  <title>Libros - Biblioteca</title>
   <style>
     body {
       margin: 0;
@@ -99,39 +99,83 @@
   </style>
 </head>
 <body>
-
-  <!-- Barra superior -->
   <header class="navbar">
     <div class="logo">
-      <img src="assets/logo.png" alt="Logo principal" class="logo" />
+      <img src="/assets/logo.png" alt="Logo principal" class="logo" />
     </div>
     <nav class="nav-links">
-      <a href="http://localhost:5000/">Inicio</a>
-      <a href="http://localhost:5000/api/libros">Libros</a>
+      <a href="/">Inicio</a>
+      <a href="/libros">Libros</a>
       <button class="user-btn">👤</button>
     </nav>
   </header>
 
-  <!-- Contenido principal -->
   <main class="main-content">
-    <div class="hero-section">
-      <img src="assets/img.jpg" alt="Imagen principal" class="hero-image" />
-      <div class="hero-text">
-        <h2>Bienvenido a Nuestra Biblioteca</h2>
-        <p>Explora nuestro catálogo digital de libros disponibles para ti.</p>
+    <div class="books-section">
+      <h2>Nuestro Catálogo de Libros</h2>
+      <p>Descubre nuestra amplia colección de títulos disponibles.</p>
+      <div class="books-grid" id="books-container">
+        <p>Cargando libros...</p>
       </div>
-    </div>
-
-    <div class="access-button">
-      <a href="#" class="cta-button">Ver Libros</a>
     </div>
   </main>
 
-  <!-- Pie de página -->
   <footer class="footer">
     <p>&copy; 2025 Biblioteca Digital. Todos los derechos reservados.</p>
     <p>Contacto: info@biblioteca.com | Tel: 123-456-7890</p>
   </footer>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const booksContainer = document.getElementById("books-container");
+
+      function renderBookCard(book) {
+        const bookCard = document.createElement("div");
+        bookCard.classList.add("book-card");
+
+        const disponibilidad = book.disponible
+          ? `<p class="available">Disponible</p>`
+          : `<p class="unavailable">No disponible</p>`;
+
+        bookCard.innerHTML = `
+          <img src="${book.imagen}" alt="Portada de ${book.titulo}" />
+          <h3>${book.titulo}</h3>
+          <p>Autor: ${book.autor}</p>
+          <p>Género: ${book.genero}</p>
+          ${disponibilidad}
+        `;
+
+        return bookCard;
+      }
+
+      function fetchLibros() {
+        fetch("/api/libros")  // Usa la ruta correcta de la API
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((libros) => {
+            booksContainer.innerHTML = "";
+            if (libros.length === 0) {
+              booksContainer.innerHTML = "<p>No se encontraron libros.</p>";
+              return;
+            }
+            libros.forEach((libro) => {
+              const bookCard = renderBookCard(libro);
+              booksContainer.appendChild(bookCard);
+            });
+          })
+          .catch((error) => {
+            console.error("Error al obtener los libros:", error);
+            booksContainer.innerHTML =
+              "<p>Error al cargar los libros. Por favor, inténtelo de nuevo más tarde.</p>";
+          });
+      }
+
+      fetchLibros();
+    });
+  </script>
 </body>
 </html>
