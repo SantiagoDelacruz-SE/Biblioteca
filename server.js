@@ -17,6 +17,11 @@ const swaggerDocument = YAML.load('./swagger.yaml');
 const memoryStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: memoryStore });
 
+const corsOptions = {
+  origin: 'http://localhost:4200', 
+  optionsSuccessStatus: 200
+};
+
 app.use(
     session({
         secret: process.env.SESSION_SECRET || "clave-segura-por-defecto",
@@ -34,21 +39,13 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(helmet());
 
-// Middleware para servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Ruta para la página de inicio
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.json({ mensaje: "API funcionando correctamente 🚀" });
 });
 
-// Ruta para la página de libros
-app.get("/api/libros", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "libros.html"));
-});
 
 // Importar TODAS las rutas
 const authRoutes = require("./routes/auth.routes");
@@ -62,8 +59,8 @@ const multasRoutes = require("./routes/multas.routes");
 // Usar rutas con prefijos lógicos
 app.use("/auth", keycloak.protect(), authRoutes);
 app.use("/api/usuarios", keycloak.protect(), usuariosRoutes);
-app.use("api/libros", librosRoutes);
-app.use("/api/autores", autoresRoutes);
+app.use("/api/libros", keycloak.protect(), librosRoutes);
+app.use("/api/autores", keycloak.protect, autoresRoutes);
 app.use("/api/categorias", categoriasRoutes);
 app.use("/api/prestamos", prestamosRoutes);
 app.use("/api/multas", multasRoutes);

@@ -1,0 +1,50 @@
+/* src/app/components/home/home.component.scss */
+
+
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+  border: 1px solid #e0e0e0; // Como en tu imagen
+  background-color: #f9f9f9; // Un fondo claro
+}
+
+.text-content {
+  font-family: "Roboto";
+  font-weight: 600;
+  flex: 1;
+  padding-right: 20px;
+  h1 {
+    font-size: 3em; // Ajusta según tu diseño
+    margin-bottom: 0.5em;
+  }
+  p {
+    font-size: 1.2em;
+    line-height: 1.6;
+  }
+  .site-credit {
+    font-style: italic;
+    color: #555;
+    margin-top: 1em;
+  }
+  .social-icons {
+    margin-top: 1em;
+    span {
+      margin-right: 10px; // Espacio entre iconos
+      // Aquí podrías usar <img> o FontAwesome si lo tuvieras
+      font-weight: bold; // Placeholder
+    }
+  }
+}
+
+.image-content {
+  flex: 1;
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px; // Bordes redondeados para la imagen
+  }
+}

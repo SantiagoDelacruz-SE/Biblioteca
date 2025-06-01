@@ -1,0 +1,190 @@
+/* src/app/components/libros-list/libros-list.component.scss */
+
+:host { // :host se refiere al elemento raíz del componente LibrosListComponent
+  display: block; // Asegura que el componente ocupe espacio
+  min-height: 100vh; // Para que ocupe al menos toda la altura de la pantalla
+  background-image: url('/assets/images/bg.jpg'); // ¡RUTA A TU IMAGEN!
+  background-size: cover; // Cubre todo el área disponible sin perder proporción
+  background-position: center center; // Centra la imagen
+  background-repeat: no-repeat; // Evita que la imagen se repita
+  background-attachment: fixed; // (Opcional) Hace que el fondo se quede fijo al hacer scroll
+  padding: 20px; // Añade padding para que el contenido no pegue a los bordes
+}
+
+// Estilos para el contenido dentro de la página de libros
+// Es posible que necesites añadir un contenedor interno con un fondo semi-transparente
+// para que el texto sea legible sobre la imagen de fondo.
+.libros-list-container { // Si este es tu contenedor principal dentro del componente
+  background-color: rgba(255, 255, 255, 0.85); // Fondo blanco semi-transparente para legibilidad
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.libros-list-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.controles-superiores {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px; /* Espacio entre botones */
+}
+
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background-color 0.2s ease;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btn-agregar {
+  background-color: #007bff;
+  color: white;
+  &:hover:not(:disabled) { background-color: #0056b3; }
+}
+
+.btn-refrescar {
+  background-color: #6c757d;
+  color: white;
+  &:hover:not(:disabled) { background-color: #545b62; }
+}
+
+.formulario-libro {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+  h3 {
+    margin-top: 0;
+    color: #333;
+  }
+}
+
+.form-group {
+  margin-bottom: 15px;
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Importante para que el padding no afecte el ancho total */
+  }
+  .invalid-input {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+  }
+}
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-guardar {
+  background-color: #28a745;
+  color: white;
+  &:hover:not(:disabled) { background-color: #1e7e34; }
+}
+
+.btn-cancelar-form {
+  background-color: #6c757d;
+  color: white;
+  &:hover:not(:disabled) { background-color: #545b62; }
+}
+
+
+.mensaje-info, .mensaje-error {
+  text-align: center;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+
+.global-error { // Para errores de modificación que se muestran arriba del formulario
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.mensaje-info {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.mensaje-error { // Para errores de carga y de validación de formulario
+  color: #721c24;
+  font-size: 0.85em;
+}
+
+.libros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.libro-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .libro-info {
+    h3 {
+      margin-top: 0;
+      color: #0056b3; // Un azul para el título
+      font-size: 1.3em;
+    }
+    p {
+      font-size: 0.95em;
+      color: #555;
+      margin-bottom: 8px;
+      strong {
+        color: #333;
+      }
+    }
+  }
+
+  .libro-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px; // Espacio entre botones de acción
+
+    .btn-editar {
+      background-color: #ffc107;
+      color: #212529;
+      &:hover:not(:disabled) { background-color: #e0a800; }
+    }
+    .btn-eliminar {
+      background-color: #dc3545;
+      color: white;
+      &:hover:not(:disabled) { background-color: #c82333; }
+    }
+  }
+}

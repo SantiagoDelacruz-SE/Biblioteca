@@ -1,0 +1,36 @@
+<div class="login-page-container">
+  <div class="login-form-wrapper">
+    <h2>Acceso de Administrador</h2>
+    <p class="login-instructions">
+      Este es un panel de administración simulado.
+    </p>
+    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" novalidate>
+      <div class="form-group">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" [(ngModel)]="loginData.username" required #username="ngModel"
+               [attr.aria-invalid]="username.invalid && (username.dirty || username.touched)"
+               [class.invalid-input]="username.invalid && (username.dirty || username.touched)">
+        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="mensaje-error-input">
+          <span *ngIf="username.errors?.['required']">El nombre de usuario es requerido.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="loginData.password" required #password="ngModel"
+               [attr.aria-invalid]="password.invalid && (password.dirty || password.touched)"
+               [class.invalid-input]="password.invalid && (password.dirty || password.touched)">
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="mensaje-error-input">
+          <span *ngIf="password.errors?.['required']">La contraseña es requerida.</span>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid" class="btn-login">Ingresar</button>
+    </form>
+
+    <div *ngIf="errorMessage" class="mensaje-error-global">
+      {{ errorMessage }}
+    </div>
+    <p class="credenciales-nota">Utiliza las credenciales: <strong>admin / admin</strong></p>
+  </div>
+</div>

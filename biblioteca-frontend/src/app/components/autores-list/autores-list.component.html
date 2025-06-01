@@ -1,0 +1,59 @@
+<div class="autores-pagina-container"> <div class="autores-contenido">
+    <h2 style="color: aliceblue;">Nuestros Autores</h2>
+
+    <div class="controles-superiores">
+      <button *ngIf="isAdmin$ | async" (click)="toggleFormularioAgregarAutor()" class="btn btn-agregar">
+        {{ mostrandoFormulario ? 'Cancelar Creación' : 'Agregar Nuevo Autor' }}
+      </button>
+      <button (click)="cargarAutores()" class="btn btn-refrescar" [disabled]="cargando">
+        {{ cargando ? 'Cargando...' : 'Refrescar Lista' }}
+      </button>
+    </div>
+
+    <div *ngIf="errorAlModificar" class="mensaje-error global-error">{{ errorAlModificar }}</div>
+
+    <div *ngIf="mostrandoFormulario && (isAdmin$ | async)" class="formulario-autor">
+      <h3>{{ nuevoAutor.id ? 'Editar Autor' : 'Nuevo Autor' }}</h3>
+      <form (ngSubmit)="onSubmitNuevoAutor(autorForm)" #autorForm="ngForm" novalidate>
+        <div class="form-group">
+          <label for="nombreAutor">Nombre Completo:</label>
+          <input type="text" id="nombreAutor" name="nombreAutor" [(ngModel)]="nuevoAutor.nombre" required minlength="3" #nombreAutor="ngModel"
+                 [class.invalid-input]="nombreAutor.invalid && (nombreAutor.dirty || nombreAutor.touched)">
+          <div *ngIf="nombreAutor.invalid && (nombreAutor.dirty || nombreAutor.touched)" class="mensaje-error">
+            <span *ngIf="nombreAutor.errors?.['required']">El nombre es requerido.</span>
+            <span *ngIf="nombreAutor.errors?.['minlength']">El nombre debe tener al menos 3 caracteres.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" [disabled]="autorForm.invalid || cargando" class="btn btn-guardar">
+            {{ cargando ? 'Guardando...' : 'Guardar Autor' }}
+          </button>
+          <button type="button" (click)="toggleFormularioAgregarAutor()" class="btn btn-cancelar-form">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <hr *ngIf="mostrandoFormulario && (isAdmin$ | async)">
+
+    <div *ngIf="cargando && !autores.length" class="mensaje-info">Cargando autores...</div>
+    <div *ngIf="errorAlCargar" class="mensaje-error">{{ errorAlCargar }}</div>
+    <div *ngIf="!cargando && !errorAlCargar && autores.length === 0" class="mensaje-info">
+      No hay autores disponibles. <span *ngIf="isAdmin$ | async">¡Agrega el primero!</span>
+    </div>
+
+    <ul *ngIf="!cargando && autores.length > 0" class="autores-grid">
+      <li *ngFor="let autor of autores" class="autor-card">
+        <div class="autor-info">
+          <h3>{{ autor.nombre }}</h3>
+        </div>
+        <div class="autor-actions" *ngIf="isAdmin$ | async">
+          <button (click)="solicitarEliminarAutor(autor.id)" class="btn btn-eliminar" [disabled]="cargando">
+            Eliminar
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div class="libros-list-container">
+  <h2>Nuestra Colección de Libros</h2>
+
+  <div class="controles-superiores">
+    <button *ngIf="isAdmin$ | async" (click)="toggleFormularioAgregarLibro()" class="btn btn-agregar">
+      {{ mostrandoFormulario ? 'Cancelar Creación' : 'Agregar Nuevo Libro' }}
+    </button>
+    <button (click)="cargarLibros()" class="btn btn-refrescar" [disabled]="cargando">
+      {{ cargando ? 'Cargando...' : 'Refrescar Lista' }}
+    </button>
+  </div>
+
+  <div *ngIf="errorAlModificar" class="mensaje-error global-error">{{ errorAlModificar }}</div>
+
+  <div *ngIf="mostrandoFormulario && (isAdmin$ | async)" class="formulario-libro">
+    <h3>{{ nuevoLibro.id ? 'Editar Libro' : 'Nuevo Libro' }}</h3>
+    <form (ngSubmit)="onSubmitNuevoLibro(libroForm)" #libroForm="ngForm" novalidate>
+      <div class="form-group">
+        <label for="titulo">Título:</label>
+        <input type="text" id="titulo" name="titulo" [(ngModel)]="nuevoLibro.titulo" required minlength="3" #titulo="ngModel"
+               [class.invalid-input]="titulo.invalid && (titulo.dirty || titulo.touched)">
+        <div *ngIf="titulo.invalid && (titulo.dirty || titulo.touched)" class="mensaje-error">
+          <span *ngIf="titulo.errors?.['required']">El título es requerido.</span>
+          <span *ngIf="titulo.errors?.['minlength']">El título debe tener al menos 3 caracteres.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="autor_nombre">Autor:</label>
+        <input type="text" id="autor_nombre" name="autor_nombre" [(ngModel)]="nuevoLibro.autor_nombre" required minlength="3" #autor_nombre="ngModel"
+               [class.invalid-input]="autor_nombre.invalid && (autor_nombre.dirty || autor_nombre.touched)">
+        <div *ngIf="autor_nombre.invalid && (autor_nombre.dirty || autor_nombre.touched)" class="mensaje-error">
+          <span *ngIf="autor_nombre.errors?.['required']">El autor es requerido.</span>
+          <span *ngIf="autor_nombre.errors?.['minlength']">El autor debe tener al menos 3 caracteres.</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="libroForm.invalid || cargando" class="btn btn-guardar">
+          {{ cargando ? 'Guardando...' : 'Guardar Libro' }}
+        </button>
+        <button type="button" (click)="toggleFormularioAgregarLibro()" class="btn btn-cancelar-form">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <hr *ngIf="mostrandoFormulario && (isAdmin$ | async)">
+
+  <div *ngIf="cargando && !libros.length" class="mensaje-info">Cargando libros...</div>
+  <div *ngIf="errorAlCargar" class="mensaje-error">{{ errorAlCargar }}</div>
+  <div *ngIf="!cargando && !errorAlCargar && libros.length === 0" class="mensaje-info">
+    No hay libros disponibles en este momento.
+    <span *ngIf="isAdmin$ | async"> ¡Agrega el primero!</span>
+  </div>
+
+  <ul *ngIf="!cargando && libros.length > 0" class="libros-grid">
+    <li *ngFor="let libro of libros" class="libro-card">
+      <div class="libro-info">
+        <h3>{{ libro.titulo }}</h3>
+        <p><strong>Autor:</strong> {{ libro.autor_nombre }}</p>
+      </div>
+      <div class="libro-actions" *ngIf="isAdmin$ | async">
+        <button (click)="solicitarEliminarLibro(libro.id)" class="btn btn-eliminar" [disabled]="cargando">
+          Eliminar
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

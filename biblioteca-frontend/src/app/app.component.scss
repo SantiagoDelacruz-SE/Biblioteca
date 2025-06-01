@@ -1,0 +1,37 @@
+nav {
+  background-color: #dfdb6c;
+  padding: 1em;
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  li {
+    float: left;
+    a {
+      display: block;
+      color: #333;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      &:hover {
+        background-color: #dfdb6c;
+      }
+    }
+  }
+  li[style*="float:right"] { 
+    float: right;
+  }
+}
+
+main {
+  padding: 20px;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  border-top: 1px solid #eee;
+}

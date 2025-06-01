@@ -1,0 +1,32 @@
+<nav class="mi-navbar"> <div class="navbar-container">
+    <ul>
+      <li><a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+      <li><a routerLink="/libros" routerLinkActive="active-link">Libros</a></li>
+      <li><a routerLink="/autores" routerLinkActive="active-link">Autores</a></li>
+
+      <ng-container *ngIf="(isLoggedIn$ | async); else showLoginButton">
+        <li>
+          <span class="navbar-user-greeting">
+            Hola, {{ (userProfile$ | async)?.firstName || (userProfile$ | async)?.username || 'Usuario' }}
+          </span>
+        </li>
+        <li>
+          <a (click)="logout()" style="cursor: pointer;" class="login-link">Cerrar Sesión</a>
+        </li>
+      </ng-container>
+      <ng-template #showLoginButton>
+        <li>
+          <a (click)="login()" style="cursor: pointer;" class="login-link">Iniciar Sesión</a>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
+</nav>
+
+<main class="main-content-area">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="app-footer">
+  <p>&copy; {{ anioActual }} {{ title }}.</p>
+</footer>
