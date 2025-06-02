@@ -1,84 +1,42 @@
-# Dependencias de Node.js
-# -----------------------------------------------------------------------------
-# La carpeta node_modules contiene todas las dependencias descargadas por npm o yarn.
-# Nunca deberías subirla al repositorio, ya que se puede regenerar fácilmente
-# ejecutando 'npm install' o 'yarn install' usando el archivo package-lock.json o yarn.lock.
-# Además, puede ser muy pesada.
-node_modules/
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Archivos de log
-# -----------------------------------------------------------------------------
-# Archivos de registro generados por la aplicación o herramientas.
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-*.lcov # Cobertura de código
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
 
-# Archivos de entorno
-# -----------------------------------------------------------------------------
-# Archivos que contienen variables de entorno específicas de tu máquina
-# o secretos que no deben ser compartidos.
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.*.local # Patrón más general para archivos .env locales
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
-# Archivos de build o distribución
-# -----------------------------------------------------------------------------
-# Archivos y carpetas generadas por el proceso de compilación o empaquetado.
-dist/
-build/
-out/
-public/ # Si 'public' contiene archivos generados por un build (ej. en Next.js, Create React App)
-.next/ # Para proyectos Next.js
-.nuxt/ # Para proyectos Nuxt.js
-.svelte-kit/ # Para proyectos SvelteKit
-
-# Archivos temporales o de caché
-# -----------------------------------------------------------------------------
-.cache/
-*.tmp
-*.swp # Archivos swap de Vim
-
-# Archivos de configuración de IDEs y editores
-# -----------------------------------------------------------------------------
-.vscode/            # Para Visual Studio Code (excepto settings.json o extensions.json si quieres compartirlos)
-!.vscode/settings.json
-!.vscode/extensions.json
-!.vscode/launch.json
-.idea/              # Para JetBrains IDEs (IntelliJ, WebStorm, etc.)
-*.sublime-project
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
 *.sublime-workspace
 
-# Archivos de sistema operativo
-# -----------------------------------------------------------------------------
-.DS_Store           # macOS
-Thumbs.db           # Windows
-ehthumbs.db         # Windows
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
 
-# Archivos de dependencias de paquetes específicos (opcional, depende del gestor)
-# -----------------------------------------------------------------------------
-# package-lock.json   # ¡NO ignores este si usas npm! Es importante para builds consistentes.
-# yarn.lock           # ¡NO ignores este si usas yarn! Es importante para builds consistentes.
-# pnpm-lock.yaml      # ¡NO ignores este si usas pnpm!
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
 
-# Archivos de tests (opcional, a veces los reportes de cobertura se ignoran)
-# -----------------------------------------------------------------------------
-coverage/ # Carpeta de reportes de cobertura de pruebas
-
-# Archivos de herramientas de desarrollo (ej. ESLint, Prettier)
-# -----------------------------------------------------------------------------
-.eslintcache
-.prettiercache
-
-# Otros específicos del proyecto
-# -----------------------------------------------------------------------------
-# Añade aquí cualquier otro archivo o carpeta que sea específico de tu proyecto
-# y no deba ser versionado.
-# mi_archivo_secreto_local.txt
-# temp_data/
+# System files
+.DS_Store
+Thumbs.db
