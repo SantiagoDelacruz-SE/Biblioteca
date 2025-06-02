@@ -10,7 +10,7 @@
         <#if messageHeader??>
             ${kcSanitize(msg("${messageHeader}"))?no_esc}
         <#else>
-            ${msg("registerTitle")}
+            Registro
         </#if>
     <#elseif section = "form">
         <form id="kc-register-form" class="${properties.kcFormClass!}" action="${url.registrationAction}" method="post" novalidate="novalidate">

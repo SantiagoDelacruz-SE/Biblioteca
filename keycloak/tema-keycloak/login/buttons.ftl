@@ -9,7 +9,7 @@
 <#macro button label id="" name="" class=["kcButtonPrimaryClass"] extra...>
   <button class="<#list class as c>${properties[c]} </#list>" name="${name}" id="${id}"
           type="submit" <#list extra as attrName, attrVal>${attrName}="${attrVal}"</#list>>
-  ${kcSanitize(msg(label))?no_esc}
+  Iniciar Sesion
   </button>
 </#macro>
 

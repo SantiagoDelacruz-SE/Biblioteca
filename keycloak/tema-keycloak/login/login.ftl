@@ -6,7 +6,7 @@
 <!-- template: login.ftl -->
 
     <#if section = "header">
-        ${msg("loginAccountTitle")}
+        LibrisNet
     <#elseif section = "form">
         <div id="kc-form">
           <div id="kc-form-wrapper">

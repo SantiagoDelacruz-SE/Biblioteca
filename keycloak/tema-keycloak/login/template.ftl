@@ -38,7 +38,7 @@
             <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
         </#list>
     </#if>
-    <title>${msg("loginTitle",(realm.displayName!''))}</title>
+    <title>Iniciar sesion en biblioteca</title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
     <#if properties.stylesCommon?has_content>
         <#list properties.stylesCommon?split(' ') as style>
@@ -114,7 +114,7 @@
   <div class="${properties.kcLoginContainer!}">
     <header id="kc-header" class="pf-v5-c-login__header">
       <div id="kc-header-wrapper"
-              class="pf-v5-c-brand">${kcSanitize(msg("loginTitleHtml",(realm.displayNameHtml!'')))?no_esc}</div>
+              class="pf-v5-c-brand"></div>
     </header>
     <main class="${properties.kcLoginMain!}">
       <div class="${properties.kcLoginMainHeader!}">
