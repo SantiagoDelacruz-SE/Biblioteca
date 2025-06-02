@@ -1,11 +1,11 @@
 // src/app/services/auth.service.ts
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { KeycloakService, KeycloakEventType } from 'keycloak-angular'; // Asegúrate que KeycloakEventType esté importado
+import { KeycloakService, KeycloakEventType } from 'keycloak-angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay, distinctUntilChanged } from 'rxjs/operators';
 
-// (Opcional pero recomendado) Interfaz para el perfil de usuario de Keycloak
+
 export interface UserProfile {
   id?: string;
   username?: string;
@@ -13,7 +13,7 @@ export interface UserProfile {
   lastName?: string;
   email?: string;
   emailVerified?: boolean;
-  // Puedes añadir más campos si los necesitas de Keycloak, ej: attributes?: Record<string, unknown>;
+  
 }
 
 @Injectable({
@@ -23,7 +23,6 @@ export class AuthService {
   private keycloakService = inject(KeycloakService);
   private router = inject(Router);
 
-  // BehaviorSubjects para el estado interno y para emitir cambios
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   private userProfileSubject = new BehaviorSubject<UserProfile | null>(null);
   private userRolesSubject = new BehaviorSubject<string[]>([]);
@@ -45,14 +44,14 @@ export class AuthService {
   this.keycloakService.keycloakEvents$.subscribe(async (event) => {
     console.log('Keycloak Event:', event);
 
-    // 1. ASEGÚRATE DE TENER ESTA LÍNEA ANTES DEL IF:
-    const eventTypeString = event.type as unknown as string; // <--- CAMBIO AQUÍ
-    // 2. ASEGÚRATE DE QUE TODAS LAS COMPARACIONES EN EL IF USEN eventTypeString:
+    
+    const eventTypeString = event.type as unknown as string; 
+    
     if (
       eventTypeString === "Ready" ||
       eventTypeString === "AuthSuccess" ||
       eventTypeString === "AuthLogout" ||
-      eventTypeString === "TokenExpired" // <-- Verifica que aquí también uses eventTypeString
+      eventTypeString === "TokenExpired" 
     ) {
       await this.updateAuthStateSubjects();
     }
@@ -60,7 +59,7 @@ export class AuthService {
 
   // Derivar isAdmin$ de userRoles$
   this.isAdmin$ = this.userRoles$.pipe(
-    map(roles => roles.includes('admin')),
+    map(roles => roles.includes('realm-admin')),
     shareReplay(1)
   );
 
@@ -100,6 +99,7 @@ export class AuthService {
         const userProfile = await this.keycloakService.loadUserProfile();
         this.userProfileSubject.next(userProfile as UserProfile); // Casting a nuestra interfaz
         const roles = this.keycloakService.getUserRoles(true); // true para obtener roles de todos los clientes asignados
+        console.log('AuthService - Roles recibidos de Keycloak:', roles);
         this.userRolesSubject.next(roles);
         console.log('AuthService: User is logged in. Profile:', userProfile, 'Roles:', roles);
       } else {

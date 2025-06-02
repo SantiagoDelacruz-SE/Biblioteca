@@ -188,3 +188,26 @@
     }
   }
 }
+
+.form-group {
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: white; // Para asegurar que no sea transparente sobre el fondo de página
+    font-size: 1em;
+
+    &:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
+
+  select.invalid-input { // Si quieres un estilo específico para select inválido
+    border-color: #dc3545 !important;
+    background-color: #fef4f4;
+  }
+}

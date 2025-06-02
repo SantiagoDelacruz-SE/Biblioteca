@@ -2,8 +2,9 @@
   <h2>Nuestra Colección de Libros</h2>
 
   <div class="controles-superiores">
-    <button *ngIf="isAdmin$ | async" (click)="toggleFormularioAgregarLibro()" class="btn btn-agregar">
+    <button *ngIf="isAdmin$ | async" (click)="toggleFormularioAgregarLibro()" class="btn btn-agregar" [disabled]="cargandoDependencias">
       {{ mostrandoFormulario ? 'Cancelar Creación' : 'Agregar Nuevo Libro' }}
+      <span *ngIf="cargandoDependencias && mostrandoFormulario">(Cargando datos del form...)</span>
     </button>
     <button (click)="cargarLibros()" class="btn btn-refrescar" [disabled]="cargando">
       {{ cargando ? 'Cargando...' : 'Refrescar Lista' }}
@@ -26,17 +27,34 @@
       </div>
 
       <div class="form-group">
-        <label for="autor_nombre">Autor:</label>
-        <input type="text" id="autor_nombre" name="autor_nombre" [(ngModel)]="nuevoLibro.autor_nombre" required minlength="3" #autor_nombre="ngModel"
-               [class.invalid-input]="autor_nombre.invalid && (autor_nombre.dirty || autor_nombre.touched)">
-        <div *ngIf="autor_nombre.invalid && (autor_nombre.dirty || autor_nombre.touched)" class="mensaje-error">
-          <span *ngIf="autor_nombre.errors?.['required']">El autor es requerido.</span>
-          <span *ngIf="autor_nombre.errors?.['minlength']">El autor debe tener al menos 3 caracteres.</span>
+        <label for="autor_id">Autor:</label>
+        <select id="autor_id" name="autor_id" [(ngModel)]="nuevoLibro.autor_id" required #autor_id="ngModel"
+                [class.invalid-input]="autor_id.invalid && (autor_id.dirty || autor_id.touched)">
+          <option [ngValue]="null" disabled>Seleccione un autor</option>
+          <option *ngFor="let autor of todosLosAutores" [value]="autor.id">
+            {{ autor.nombre }}
+          </option>
+        </select>
+        <div *ngIf="autor_id.invalid && (autor_id.dirty || autor_id.touched)" class="mensaje-error">
+          <span *ngIf="autor_id.errors?.['required']">El autor es requerido.</span>
         </div>
+         </div>
+
+      <div class="form-group">
+        <label for="categoria_id">Categoría:</label>
+        <select id="categoria_id" name="categoria_id" [(ngModel)]="nuevoLibro.categoria_id" #categoria_id="ngModel">
+          <option [ngValue]="null">Seleccione una categoría (opcional)</option>
+          <option value="1">Ciencia Ficción (Ejemplo ID 1)</option> </select>
+        </div>
+
+      <div class="form-group">
+        <label for="isbn">ISBN:</label>
+        <input type="text" id="isbn" name="isbn" [(ngModel)]="nuevoLibro.isbn" #isbn="ngModel">
       </div>
 
+
       <div class="form-actions">
-        <button type="submit" [disabled]="libroForm.invalid || cargando" class="btn btn-guardar">
+        <button type="submit" [disabled]="libroForm.invalid || cargando || cargandoDependencias" class="btn btn-guardar">
           {{ cargando ? 'Guardando...' : 'Guardar Libro' }}
         </button>
         <button type="button" (click)="toggleFormularioAgregarLibro()" class="btn btn-cancelar-form">
@@ -60,6 +78,9 @@
       <div class="libro-info">
         <h3>{{ libro.titulo }}</h3>
         <p><strong>Autor:</strong> {{ libro.autor_nombre }}</p>
+        <p *ngIf="libro.categoria_nombre"><strong>Categoría:</strong> {{ libro.categoria_nombre }}</p>
+        <p *ngIf="libro.isbn"><strong>ISBN:</strong> {{ libro.isbn }}</p>
+        <p *ngIf="libro.anio_publicacion"><strong>Año:</strong> {{ libro.anio_publicacion }}</p>
       </div>
       <div class="libro-actions" *ngIf="isAdmin$ | async">
         <button (click)="solicitarEliminarLibro(libro.id)" class="btn btn-eliminar" [disabled]="cargando">

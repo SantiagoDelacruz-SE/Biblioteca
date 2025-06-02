@@ -1,81 +1,60 @@
-const express = require('express');
+const express = require("express");
+const pool = require("../config/database");
+
 const router = express.Router();
-const pool = require('../config/database'); // Conexión a la base de datos
 
 // Obtener todos los autores
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM autores');
+        const result = await pool.query("SELECT * FROM autores");
         res.json(result.rows);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    } catch (err) {
+        console.error("Error en GET /api/autores:", err.message);
+        res.status(500).json({ error: err.message });
     }
 });
 
-// Obtener un autor por ID
-router.get('/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const result = await pool.query('SELECT * FROM autores WHERE id = $1', [id]);
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Autor no encontrado' });
-        }
-        res.json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+// Crear un autor
+router.post("/", async (req, res) => {
+    if (!req.kauth || !req.kauth.grant || !req.kauth.grant.access_token.hasRealmRole('admin')) {
+        return res.status(403).json({ error: "Acceso denegado: Se requiere rol de administrador." });
     }
-});
 
-// Crear un nuevo autor
-router.post('/', async (req, res) => {
     try {
-        const { nombre } = req.body;
-
+        const { nombre, nacionalidad } = req.body; // Asumiendo que 'nacionalidad' es opcional
         if (!nombre) {
-            return res.status(400).json({ error: 'El nombre es obligatorio' });
+            return res.status(400).json({ error: "El campo 'nombre' es obligatorio" });
         }
-
         const result = await pool.query(
-            'INSERT INTO autores (nombre) VALUES ($1) RETURNING *',
-            [nombre]
+            "INSERT INTO autores (nombre, nacionalidad) VALUES ($1, $2) RETURNING *",
+            [nombre, nacionalidad || null]
         );
         res.status(201).json(result.rows[0]);
-    } catch (error) {
-        console.error("Error en POST /autores:", error);
-        res.status(500).json({ error: "Error al crear autor" });
-    }
-});
-
-// Actualizar un autor
-router.put('/:id', async (req, res) => {
-    const { id } = req.params;
-    const { nombre } = req.body;
-    try {
-        const result = await pool.query(
-            'UPDATE autores SET nombre = $1 WHERE id = $2 RETURNING *',
-            [nombre, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Autor no encontrado' });
-        }
-        res.json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    } catch (err) {
+        console.error("Error en POST /api/autores:", err.message, "Datos recibidos:", req.body);
+        res.status(500).json({ error: "Error interno al crear el autor: " + err.message });
     }
 });
 
 // Eliminar un autor
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
+    if (!req.kauth || !req.kauth.grant || !req.kauth.grant.access_token.hasRealmRole('admin')) {
+        return res.status(403).json({ error: "Acceso denegado: Se requiere rol de administrador." });
+    }
+
     const { id } = req.params;
     try {
-        const result = await pool.query('DELETE FROM autores WHERE id = $1 RETURNING *', [id]);
+        const result = await pool.query("DELETE FROM autores WHERE id = $1 RETURNING *", [id]);
         if (result.rowCount === 0) {
-            return res.status(404).json({ message: 'Autor no encontrado' });
+            return res.status(404).json({ message: "Autor no encontrado" });
         }
-        res.json({ message: 'Autor eliminado correctamente' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.json({ message: "Autor eliminado correctamente", autorEliminado: result.rows[0] });
+    } catch (err) {
+        console.error(`Error en DELETE /api/autores/${id}:`, err.message);
+        res.status(500).json({ error: err.message });
     }
 });
+
+// Aquí irían las rutas PUT para actualizar autores, también protegidas por rol de admin.
 
 module.exports = router;

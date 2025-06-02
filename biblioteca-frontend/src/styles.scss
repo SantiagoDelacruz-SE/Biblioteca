@@ -2,3 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Imperial+Script&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 
+.main-content-area {
+  padding: 20px;
+  min-height: calc(100vh - 120px); // Ajusta este valor según la altura real de tu navbar + footer
+}
+
+.app-footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #f0f0f0; // Un gris claro para el footer
+  border-top: 1px solid #ddd;
+  font-size: 0.9em;
+  color: #555;
+}

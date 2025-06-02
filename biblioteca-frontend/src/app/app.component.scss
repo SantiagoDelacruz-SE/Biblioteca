@@ -1,37 +1,110 @@
-nav {
-  background-color: #dfdb6c;
-  padding: 1em;
-  ul {
+/* src/app/app.component.scss */
+
+.mi-navbar {
+  background-color: #F5F5DC; // Beige
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+  color: #333; // Color de texto general para la navbar
+
+  .navbar-container {
+    display: flex;
+    justify-content: space-between; // Esto es clave para separar el logo/links de la sección de usuario
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .navbar-brand {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: inherit; // Hereda el color de .mi-navbar
+    text-decoration: none;
+    margin-right: auto; // Empuja los elementos de la derecha
+  }
+
+  .navbar-links { // Contenedor para los enlaces de navegación
     list-style-type: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-  }
-  li {
-    float: left;
-    a {
-      display: block;
-      color: #333;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-      &:hover {
-        background-color: #dfdb6c;
+    display: flex;
+    align-items: center; // Alinea verticalmente los items del menú
+
+    li {
+      margin-left: 20px;
+      a {
+        text-decoration: none;
+        color: #555;
+        padding: 5px 0;
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+          color: #000;
+        }
+
+        &.active-link {
+          font-weight: bold;
+          border-bottom: 2px solid #333;
+        }
       }
     }
   }
-  li[style*="float:right"] { 
-    float: right;
+
+  .navbar-user-section {
+    display: flex;
+    align-items: center; // Alinea verticalmente el saludo y el botón de logout
+    margin-left: 20px; // Espacio respecto a los links de navegación
+
+    .user-greeting {
+      display: flex;
+      align-items: center;
+      margin-right: 15px; // Espacio entre el saludo y el botón de logout
+      color: #333; // Color para el saludo
+
+      .user-icon {
+        width: 20px;  // Tamaño del ícono
+        height: 20px;
+        margin-right: 8px; // Espacio entre el ícono y el texto "Hola,"
+        fill: currentColor; // Para que el SVG tome el color del texto
+      }
+    }
+
+    .logout-link, .login-link-button {
+      text-decoration: none;
+      color: #555;
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f0f0f0;
+      transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #e0e0e0;
+        color: #000;
+      }
+    }
+    .login-link-button { // Si quieres que el botón de iniciar sesión se vea más como un botón primario
+        background-color: #007bff; // Ejemplo color primario
+        color: white;
+        border-color: #007bff;
+        &:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    }
   }
 }
 
-main {
+// Estilos generales para el main y footer (pueden estar en styles.scss o aquí)
+.main-content-area {
   padding: 20px;
+  min-height: calc(100vh - 120px); // Ajusta este valor según la altura real de tu navbar + footer
 }
 
-footer {
+.app-footer {
   text-align: center;
-  padding: 20px;
-  margin-top: 40px;
-  border-top: 1px solid #eee;
+  padding: 15px;
+  background-color: #f0f0f0; // Un gris claro para el footer
+  border-top: 1px solid #ddd;
+  font-size: 0.9em;
+  color: #555;
 }

@@ -17,7 +17,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
         clientId: 'biblioteca-frontend-client'
       },
       initOptions: {
-        onLoad: 'check-sso', // 'login-required' para forzar login; 'check-sso' para verificar si ya hay sesión
+        onLoad: 'login-required', // 'login-required' para forzar login; 'check-sso' para verificar si ya hay sesión
         silentCheckSsoRedirectUri:
           window.location.origin + '/assets/silent-check-sso.html'
       },

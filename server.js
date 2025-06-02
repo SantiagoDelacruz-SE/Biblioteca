@@ -59,8 +59,8 @@ const multasRoutes = require("./routes/multas.routes");
 // Usar rutas con prefijos lógicos
 app.use("/auth", keycloak.protect(), authRoutes);
 app.use("/api/usuarios", keycloak.protect(), usuariosRoutes);
-app.use("/api/libros", keycloak.protect(), librosRoutes);
-app.use("/api/autores", keycloak.protect, autoresRoutes);
+app.use("/api/libros", librosRoutes);
+app.use("/api/autores", keycloak.protect(), autoresRoutes);
 app.use("/api/categorias", categoriasRoutes);
 app.use("/api/prestamos", prestamosRoutes);
 app.use("/api/multas", multasRoutes);

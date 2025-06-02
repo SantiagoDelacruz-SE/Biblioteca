@@ -1,5 +1,23 @@
 services:
-  # Servicio para Keycloak 
+  # Servicio para la base de datos PostgreSQL de Keycloak
+  keycloak_db:
+    image: postgres:15-alpine
+    container_name: keycloak_db
+    environment:
+      POSTGRES_USER: keycloak      # Usuario de la base de datos para Keycloak
+      POSTGRES_PASSWORD: keycloak  # Contraseña de la base de datos para Keycloak
+      POSTGRES_DB: keycloak        # Nombre de la base de datos para Keycloak
+    volumes:
+      - keycloak_data:/var/lib/postgresql/data # Almacenamiento persistente para la base de datos de Keycloak
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"] # Comprueba si la base de datos de Keycloak está lista
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - biblioteca-network # Asegurarse que está en la misma red que Keycloak
+
+  # Servicio para Keycloak
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: biblioteca-keycloak
@@ -8,17 +26,22 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
-      - DB_VENDOR=postgres
-      - DB_ADDR=biblioteca-db
-      - DB_DATABASE=bibliotecabase
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-    command: ["start-dev"]
+      - KC_DB=postgres                # Usar prefijo KC_ para versiones recientes de Keycloak
+      - KC_DB_URL_HOST=keycloak_db    # Nombre del servicio de la base de datos de Keycloak
+      - KC_DB_URL_DATABASE=keycloak   # Nombre de la base de datos en keycloak_db
+      - KC_DB_USERNAME=keycloak       # Usuario para keycloak_db
+      - KC_DB_PASSWORD=keycloak       # Contraseña para keycloak_db
+      - KC_HTTP_ENABLED=true          # Habilitar HTTP si no usas proxy con HTTPS
+      # - KC_HOSTNAME=localhost # Opcional: define el nombre de host si es necesario para la comunicación externa
+    command: ["start-dev", "--import-realm"] # start-dev es para desarrollo, para producción usa 'start' y configura HTTPS
+    volumes:
+      - ./keycloak/reino:/opt/keycloak/data/import
+      - ./keycloak/tema-keycloak:/opt/keycloak/themes/my-theme
     depends_on:
-      - db
+      keycloak_db: # Keycloak depende de que keycloak_db esté saludable
+        condition: service_healthy
     networks:
       - biblioteca-network
-
 
   # Servicio para la aplicación Node.js
   app:
@@ -32,18 +55,19 @@ services:
       - JWT_EXPIRES_IN=1d
       - DATABASE_URL=postgres://postgres:postgres@db:5432/bibliotecabase
     depends_on:
-      - db
+      db: # La aplicación depende de que 'db' esté disponible (pero no necesariamente saludable)
+        condition: service_started # O puedes agregar un healthcheck a 'db' y usar service_healthy
     networks:
       - biblioteca-network
     volumes:
       - .:/usr/src/app
 
-  # Servicio para la base de datos PostgreSQL
+  # Servicio para la base de datos PostgreSQL de la aplicación
   db:
     image: postgres:latest
     container_name: biblioteca-db
     environment:
-      # DATABASE_HOST: localhost
+      # DATABASE_HOST: localhost # Esta variable no es estándar de la imagen postgres y no suele ser necesaria dentro de Docker
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bibliotecabase
@@ -54,6 +78,11 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres-data:/var/lib/postgresql/data
+    healthcheck: # Es buena idea añadir un healthcheck también a la BD de la aplicación
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bibliotecabase"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 networks:
   biblioteca-network:
@@ -61,3 +90,4 @@ networks:
 
 volumes:
   postgres-data:
+  keycloak_data:

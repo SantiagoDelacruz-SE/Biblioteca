@@ -5,10 +5,15 @@ import { Observable } from 'rxjs';
 
 // (Opcional pero recomendado) Define una interfaz para tus libros
 export interface Libro {
-  id?: any; // El ID puede ser asignado por el backend
+  id?: any;
   titulo: string;
-  autor_nombre: string;
-  
+  autor_id?: number | null; // Para la selección en el formulario
+  autor_nombre?: string;    // Para mostrar en la lista
+  categoria_id?: number | null; // Para la selección en el formulario
+  categoria_nombre?: string;  // Para mostrar en la lista
+  isbn?: string | null;
+  anio_publicacion?: number | null;
+  // Añade aquí otras propiedades que tus libros puedan tener
 }
 
 @Injectable({

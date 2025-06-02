@@ -3,7 +3,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LibroService, Libro } from '../../services/libro.service';
-import { AuthService } from '../../services/auth.service'; // Importar AuthService
+import { AutorService, Autor } from '../../services/autor.service';
+import { AuthService } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -15,22 +16,32 @@ import { Observable } from 'rxjs';
 })
 export class LibrosListComponent implements OnInit {
   libros: Libro[] = [];
+  todosLosAutores: Autor[] = []; // Para el dropdown de autores
+  // todasLasCategorias: Categoria[] = []; // Para el dropdown de categorías
+
   cargando = true;
+  cargandoDependencias = true; // Para autores y categorías
   errorAlCargar: string | null = null;
   errorAlModificar: string | null = null;
 
   mostrandoFormulario = false;
-  nuevoLibro: Partial<Libro> = {
+  nuevoLibro: Partial<Libro> = { // Usamos Partial porque no todos los campos son para creación directa (ej. id, autor_nombre)
     titulo: '',
-    autor_nombre: '' // Asegúrate que esto coincida con tu interfaz Libro y el form
+    autor_id: null,
+    categoria_id: null, // Asegúrate de tener un CategoriaService y una forma de obtenerlas
+    isbn: '',
+    anio_publicacion: undefined
   };
 
   private libroService = inject(LibroService);
-  private authService = inject(AuthService); // Inyectar AuthService
-  isAdmin$: Observable<boolean> = this.authService.isAdmin$; // Exponer para la plantilla
+  private autorService = inject(AutorService);
+  // private categoriaService = inject(CategoriaService); // Si lo implementas
+  private authService = inject(AuthService);
+  isAdmin$: Observable<boolean> = this.authService.isAdmin$;
 
   ngOnInit(): void {
     this.cargarLibros();
+    this.cargarDependenciasParaFormulario();
   }
 
   cargarLibros(): void {
@@ -48,11 +59,36 @@ export class LibrosListComponent implements OnInit {
     });
   }
 
+  cargarDependenciasParaFormulario(): void {
+    this.cargandoDependencias = true;
+    // Cargar autores
+    this.autorService.obtenerAutores().subscribe({
+      next: (autores) => {
+        this.todosLosAutores = autores;
+        this.cargandoDependencias = false; 
+      },
+      error: (err) => {
+        console.error('Error al cargar autores (y/o categorías):', err);
+        this.errorAlModificar = 'No se pudieron cargar datos para el formulario (autores/categorías).';
+        this.cargandoDependencias = false;
+      }
+    });
+  }
+
   toggleFormularioAgregarLibro(): void {
     this.mostrandoFormulario = !this.mostrandoFormulario;
     this.errorAlModificar = null;
     if (this.mostrandoFormulario) {
-      this.nuevoLibro = { titulo: '', autor_nombre: '' };
+      this.nuevoLibro = { // Resetea al abrir
+        titulo: '',
+        autor_id: null,
+        categoria_id: null,
+        isbn: '',
+        anio_publicacion: undefined
+      };
+      if (this.todosLosAutores.length === 0 /* || this.todasLasCategorias.length === 0 */) {
+        this.cargarDependenciasParaFormulario(); // Carga si no están disponibles
+      }
     }
   }
 
@@ -63,18 +99,29 @@ export class LibrosListComponent implements OnInit {
       return;
     }
     this.errorAlModificar = null;
+
+    // Construye el objeto que espera el backend
+    // (titulo, autor_id, categoria_id, isbn, anio_publicacion)
     const libroParaEnviar: Libro = {
       titulo: this.nuevoLibro.titulo!,
-      autor_nombre: this.nuevoLibro.autor_nombre!
+      autor_id: this.nuevoLibro.autor_id ? Number(this.nuevoLibro.autor_id) : null,
+      categoria_id: this.nuevoLibro.categoria_id ? Number(this.nuevoLibro.categoria_id) : null,
+      isbn: this.nuevoLibro.isbn || null,
+      anio_publicacion: this.nuevoLibro.anio_publicacion ? Number(this.nuevoLibro.anio_publicacion) : null
     };
+
     this.libroService.crearLibro(libroParaEnviar).subscribe({
-      next: (libroAgregado) => {
-        this.libros.push(libroAgregado);
+      next: (libroAgregadoConDetalles) => { // Asumimos que el backend devuelve el libro con nombres de autor/categoría
+        // this.libros.push(libroAgregadoConDetalles); // Opción 1: Añadir localmente
+        this.cargarLibros(); // Opción 2: Recargar toda la lista para asegurar consistencia
         this.toggleFormularioAgregarLibro();
-        form.resetForm({ titulo: '', autor_nombre: '' });
+        form.resetForm({
+          titulo: '', autor_id: null, categoria_id: null, isbn: '', anio_publicacion: undefined
+        });
       },
       error: (err) => {
-        this.errorAlModificar = 'Error al agregar el libro.';
+        console.error('Error al agregar libro:', err);
+        this.errorAlModificar = err.error?.error || 'Error al agregar el libro. Verifique los datos.';
       }
     });
   }
@@ -84,7 +131,8 @@ export class LibrosListComponent implements OnInit {
     if (confirm(`¿Estás seguro de que quieres eliminar este libro?`)) {
       this.errorAlModificar = null;
       this.libroService.eliminarLibro(idLibro).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log(response.message); // Mensaje del backend
           this.libros = this.libros.filter(libro => libro.id !== idLibro);
         },
         error: (err) => {
