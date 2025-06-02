@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 export interface Autor {
   id?: any; // El ID puede ser asignado por el backend y es de tipo 'any'
   nombre: string;
-  nacionalidad?: string; // Ejemplo de otro campo
 }
 
 @Injectable({

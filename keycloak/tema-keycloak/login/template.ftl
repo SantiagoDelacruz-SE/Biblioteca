@@ -109,14 +109,14 @@
     </script>
 </head>
 
-<body id="keycloak-bg" class="${properties.kcBodyClass!}" data-page-id="login-${pageId}">
+<body style="background-image: url('${url.resourcesPath}/img/bg-login.png'); background-size: cover; background-position: center center; background-repeat: no-repeat; background-attachment: fixed;" id="keycloak-bg" class="${properties.kcBodyClass!}" data-page-id="login-${pageId}">
 <div class="${properties.kcLogin!}">
   <div class="${properties.kcLoginContainer!}">
     <header id="kc-header" class="pf-v5-c-login__header">
       <div id="kc-header-wrapper"
               class="pf-v5-c-brand"></div>
     </header>
-    <main class="${properties.kcLoginMain!}">
+    <main class="${properties.kcLoginMain!}" style="border-radius: 25px;">
       <div class="${properties.kcLoginMainHeader!}">
         <h1 class="${properties.kcLoginMainTitle!}" id="kc-page-title"><#nested "header"></h1>
         <#if realm.internationalizationEnabled  && locale.supported?size gt 1>

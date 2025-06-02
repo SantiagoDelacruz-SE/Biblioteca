@@ -1,0 +1,197 @@
+:host {
+  display: block; 
+  min-height: 100vh; 
+  background-image: url('/assets/images/categoria.jpg'); 
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  padding-top: 2rem; 
+  padding-bottom: 2rem; 
+}
+
+
+.categorias-container {
+  max-width: 900px; 
+  margin: 2rem auto; 
+  padding: 2rem; 
+  background-color: rgba(255, 255, 255, 0.92); 
+  border-radius: 12px; 
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); 
+  color: #333; 
+}
+
+// Título principal de la sección
+h2.section-title {
+  color: #2c3e50; // Un color oscuro para el título, puedes ajustarlo
+  font-size: 2em; // Tamaño del título
+  font-weight: 600;
+  text-align: center; // Centrar el título
+  margin-bottom: 2rem; // Espacio debajo del título
+  // text-shadow: 1px 1px 2px rgba(0,0,0,0.1); // Sombra de texto sutil (opcional)
+}
+
+// Estilos para el formulario de agregar categoría
+.form-agregar-categoria {
+  background-color: #f9f9f9; // Un fondo ligeramente diferente para la sección del formulario
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  h3 {
+    font-size: 1.5em;
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .form-fields {
+    display: flex;
+    flex-direction: column; // Por defecto, apila los elementos
+    gap: 1rem;
+
+    @media (min-width: 640px) { // En pantallas más grandes, ponlos en línea
+      flex-direction: row;
+      align-items: flex-end; // Alinea la base de los inputs con el botón
+    }
+  }
+
+  .form-group {
+    flex-grow: 1; // Permite que el input ocupe el espacio disponible
+  }
+
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: #4a90e2; 
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+    }
+  }
+
+  button[type="submit"] {
+    padding: 0.75rem 1.5rem;
+    background-color: #0062cc; 
+    color: white; 
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    align-self: flex-start; 
+
+    @media (min-width: 640px) {
+      align-self: flex-end; 
+      flex-shrink: 0; 
+    }
+
+    &:hover {
+      background-color: #0056b3; 
+    }
+  }
+}
+
+
+.tabla-categorias {
+  width: 100%;
+  border-collapse: collapse; 
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+  border-radius: 8px; 
+
+  thead {
+    background-color: #343a40; 
+    color: white;
+
+    th {
+      padding: 0.9rem 1rem;
+      text-align: left;
+      font-size: 0.85em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #dee2e6; 
+
+      &:last-child {
+        border-bottom: none; 
+      }
+
+      &:nth-child(even) {
+        background-color: #f8f9fa; 
+      }
+
+      &:hover {
+        background-color: #e9ecef; 
+      }
+
+      td {
+        padding: 0.9rem 1rem;
+        vertical-align: middle; 
+        font-size: 0.95em;
+        color: #495057;
+
+        &.acciones { 
+          text-align: left; 
+        }
+      }
+    }
+  }
+}
+
+.btn-accion {
+  background-color: transparent;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &.btn-eliminar {
+    color: #dc3545; 
+    &:hover {
+      background-color: rgba(220, 53, 69, 0.1); 
+      color: #c82333; 
+    }
+  }
+}
+
+.mensaje-feedback {
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95em;
+
+  &.exito {
+    background-color: #d1e7dd; // Verde claro
+    color: #0f5132; // Verde oscuro
+    border: 1px solid #badbcc;
+  }
+
+  &.error {
+    background-color: #f8d7da; // Rojo claro
+    color: #842029; // Rojo oscuro
+    border: 1px solid #f5c2c7;
+  }
+}

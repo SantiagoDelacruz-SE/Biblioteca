@@ -3,7 +3,7 @@
 /* --- Variables de Color (ajusta estos valores a los de tu app) --- */
 :root {
 
-    --librisnet-bg-page: #f8f5f0; /* Beige claro para el fondo de toda la página */
+    --librisnet-bg-page: #d85252; /* Beige claro para el fondo de toda la página */
     --librisnet-text-dark: #2c3e50; /* Gris oscuro/negro suave para texto principal */
     --librisnet-text-medium: #555555; /* Para texto secundario o etiquetas */
     --librisnet-text-header-brand: #333333; /* Color para el título "LibrisNet" en el panel */
@@ -20,7 +20,6 @@
 body.librisnet-body { /* O body.login-pf si es la clase que finalmente usa tu FTL para el body */
 
     /* --- Propiedades para la IMAGEN de fondo --- */
-    background-image: url(C:\Users\santi\OneDrive\Escritorio\biblioteca-backend\keycloak\tema-keycloak\login\resources\css\bg-login.jpg); /* CAMBIA 'mi-imagen-de-fondo.jpg' AL NOMBRE DE TU IMAGEN */
     background-size: cover;   /* Escala la imagen para cubrir todo el fondo */
     background-position: center center; /* Centra la imagen */
     background-repeat: no-repeat;   /* Evita que la imagen se repita */
@@ -28,7 +27,6 @@ body.librisnet-body { /* O body.login-pf si es la clase que finalmente usa tu FT
 
     /* Color de fondo de respaldo por si la imagen no carga o mientras carga */
     background-color: var(--librisnet-bg-page); /* Puedes mantener tu color beige claro o cambiarlo */
-
     /* --- Estilos que ya tenías --- */
     font-family: var(--librisnet-font-family);
     color: var(--librisnet-text-dark);
@@ -54,7 +52,7 @@ body.librisnet-body { /* O body.login-pf si es la clase que finalmente usa tu FT
 .kc-login-panel-librisnet { /* Esta es la caja blanca central */
     background-color: var(--librisnet-bg-panel);
     border: 1px solid var(--librisnet-border-color);
-    border-radius: 8px;
+    border-radius: 50px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     padding: 35px 40px;
     max-width: 430px;

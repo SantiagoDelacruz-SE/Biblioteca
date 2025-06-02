@@ -57,7 +57,6 @@ export class AuthService {
     }
   });
 
-  // Derivar isAdmin$ de userRoles$
   this.isAdmin$ = this.userRoles$.pipe(
     map(roles => roles.includes('realm-admin')),
     shareReplay(1)
@@ -66,20 +65,13 @@ export class AuthService {
   this.updateAuthStateSubjectsWhenReady();
 }
 
-  /**
-   * Intenta actualizar el estado de autenticación. Se llama en el constructor.
-   * El evento OnReady de Keycloak es el principal responsable de la actualización inicial fiable.
-   */
+  
   private async updateAuthStateSubjectsWhenReady(): Promise<void> {
     try {
-      // Esta llamada es para asegurar que no intentamos acceder a métodos de Keycloak
-      // antes de que 'init' haya tenido la oportunidad de ejecutarse (aunque APP_INITIALIZER lo maneja).
-      // No es estrictamente necesario si se confía plenamente en el evento OnReady.
+      
       await this.keycloakService.isLoggedIn(); 
       await this.updateAuthStateSubjects();
     } catch (error) {
-      // Este error podría ocurrir si Keycloak no está accesible durante el arranque inicial
-      // antes de que el evento OnReady se dispare.
       console.warn("AuthService: Could not perform initial auth state update, waiting for Keycloak events.", error);
       this.isLoggedInSubject.next(false);
       this.userProfileSubject.next(null);
@@ -87,9 +79,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * Actualiza los BehaviorSubjects internos basados en el estado actual de KeycloakService.
-   */
+  
   private async updateAuthStateSubjects(): Promise<void> {
     try {
       const isLoggedIn = await this.keycloakService.isLoggedIn();
@@ -97,8 +87,8 @@ export class AuthService {
 
       if (isLoggedIn) {
         const userProfile = await this.keycloakService.loadUserProfile();
-        this.userProfileSubject.next(userProfile as UserProfile); // Casting a nuestra interfaz
-        const roles = this.keycloakService.getUserRoles(true); // true para obtener roles de todos los clientes asignados
+        this.userProfileSubject.next(userProfile as UserProfile); 
+        const roles = this.keycloakService.getUserRoles(true); 
         console.log('AuthService - Roles recibidos de Keycloak:', roles);
         this.userRolesSubject.next(roles);
         console.log('AuthService: User is logged in. Profile:', userProfile, 'Roles:', roles);
@@ -132,13 +122,10 @@ export class AuthService {
     }
   }
 
-  /**
-   * Cierra la sesión del usuario en Keycloak y en la aplicación.
-   */
+  
   async logout(): Promise<void> {
     try {
-      await this.keycloakService.logout(window.location.origin); // Redirige a la raíz de tu app después del logout
-      // Los BehaviorSubjects se actualizarán a través del evento OnAuthLogout que dispara updateAuthStateSubjects
+      await this.keycloakService.logout(window.location.origin); 
     } catch (error) {
       console.error('AuthService: Failed to initiate logout sequence', error);
     }

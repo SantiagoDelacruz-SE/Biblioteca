@@ -4,6 +4,7 @@
     <ul class="navbar-links"> <li><a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
       <li><a routerLink="/libros" routerLinkActive="active-link">Libros</a></li>
       <li><a routerLink="/autores" routerLinkActive="active-link">Autores</a></li>
+      <li><a routerLink="/categorias" class="px-3 py-2 hover:bg-gray-700 rounded">Categorías</a></li>
     </ul>
 
     <div class="navbar-user-section"> <ng-container *ngIf="(isLoggedIn$ | async); else showLoginButton">

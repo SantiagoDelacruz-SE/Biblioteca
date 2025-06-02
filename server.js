@@ -59,11 +59,11 @@ const multasRoutes = require("./routes/multas.routes");
 // Usar rutas con prefijos lógicos
 app.use("/auth", keycloak.protect(), authRoutes);
 app.use("/api/usuarios", keycloak.protect(), usuariosRoutes);
-app.use("/api/libros", librosRoutes);
+app.use("/api/libros", keycloak.protect(), librosRoutes);
 app.use("/api/autores", keycloak.protect(), autoresRoutes);
-app.use("/api/categorias", categoriasRoutes);
-app.use("/api/prestamos", prestamosRoutes);
-app.use("/api/multas", multasRoutes);
+app.use("/api/categorias", keycloak.protect(), categoriasRoutes);
+app.use("/api/prestamos", keycloak.protect(),prestamosRoutes);
+app.use("/api/multas", keycloak.protect(),multasRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Middleware para manejar rutas no encontradas (404)

@@ -1,0 +1,52 @@
+<div class="categorias-container">
+
+  <h2 class="section-title">Listado de Categorías</h2>
+
+  <div *ngIf="mensaje" class="mensaje-feedback"
+       [ngClass]="{'exito': mensaje.includes('exitosamente'), 'error': mensaje.includes('Error') || mensaje.includes('vacío') || mensaje.includes('inválido')}">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="authService.isAdmin$ | async" class="form-agregar-categoria">
+    <h3>Agregar Nueva Categoría</h3>
+    <form (ngSubmit)="agregarCategoria()" class="form-fields">
+      <div class="form-group">
+        <label for="nombreCategoria" class="sr-only">Nombre de la Categoría</label>
+        <input type="text" id="nombreCategoria" [(ngModel)]="nuevaCategoriaNombre" name="nuevaCategoriaNombre"
+               placeholder="Nombre de la categoría" required>
+      </div>
+      <button type="submit">
+        Agregar Categoría
+      </button>
+    </form>
+  </div>
+
+  <div class="tabla-wrapper">
+    <table class="tabla-categorias">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th *ngIf="authService.isAdmin$ | async">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let categoria of categorias">
+          <td>{{ categoria.id }}</td>
+          <td>{{ categoria.nombre }}</td>
+          <td class="acciones" *ngIf="authService.isAdmin$ | async">
+            <button (click)="eliminarCategoria(categoria.id)" class="btn-accion btn-eliminar" title="Eliminar categoría">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="!categorias || categorias.length === 0">
+          <td [attr.colspan]="(authService.isAdmin$ | async) ? 3 : 2" style="text-align: center; padding: 1rem; color: #6c757d;">
+            No hay categorías para mostrar.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
