@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { LibroService, Libro } from '../../services/libro.service';
 import { AutorService, Autor } from '../../services/autor.service';
+import { Categoria, CategoriaService } from '../../services/categoria.service';
 import { AuthService } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 
@@ -17,7 +18,7 @@ import { Observable } from 'rxjs';
 export class LibrosListComponent implements OnInit {
   libros: Libro[] = [];
   todosLosAutores: Autor[] = []; // Para el dropdown de autores
-  // todasLasCategorias: Categoria[] = []; // Para el dropdown de categorías
+  todasLasCategorias: Categoria[] = []; // Para el dropdown de categorías
 
   cargando = true;
   cargandoDependencias = true; // Para autores y categorías
@@ -28,14 +29,12 @@ export class LibrosListComponent implements OnInit {
   nuevoLibro: Partial<Libro> = { // Usamos Partial porque no todos los campos son para creación directa (ej. id, autor_nombre)
     titulo: '',
     autor_id: null,
-    categoria_id: null, // Asegúrate de tener un CategoriaService y una forma de obtenerlas
-    isbn: '',
-    anio_publicacion: undefined
+    categoria_id: null
   };
 
   private libroService = inject(LibroService);
   private autorService = inject(AutorService);
-  // private categoriaService = inject(CategoriaService); // Si lo implementas
+  private categoriaService = inject(CategoriaService); // Si lo implementas
   private authService = inject(AuthService);
   isAdmin$: Observable<boolean> = this.authService.isAdmin$;
 
@@ -73,6 +72,19 @@ export class LibrosListComponent implements OnInit {
         this.cargandoDependencias = false;
       }
     });
+    // Cargar categorías
+    this.categoriaService.obtenerCategorias().subscribe({
+      next: (categorias) => {
+        this.todasLasCategorias = categorias;
+        // Podrías poner cargandoDependencias a false solo cuando ambas cargas terminen si es necesario.
+        // Por simplicidad, si la carga de autores ya lo hace, puede ser suficiente.
+      },
+      error: (err) => {
+        console.error('Error al cargar categorías:', err);
+        this.errorAlModificar = (this.errorAlModificar || '') + ' No se pudieron cargar las categorías.';
+        // this.cargandoDependencias = false; // Considera el estado de la carga de autores
+      }
+    });
   }
 
   toggleFormularioAgregarLibro(): void {
@@ -82,9 +94,7 @@ export class LibrosListComponent implements OnInit {
       this.nuevoLibro = { // Resetea al abrir
         titulo: '',
         autor_id: null,
-        categoria_id: null,
-        isbn: '',
-        anio_publicacion: undefined
+        categoria_id: null
       };
       if (this.todosLosAutores.length === 0 /* || this.todasLasCategorias.length === 0 */) {
         this.cargarDependenciasParaFormulario(); // Carga si no están disponibles
@@ -100,14 +110,11 @@ export class LibrosListComponent implements OnInit {
     }
     this.errorAlModificar = null;
 
-    // Construye el objeto que espera el backend
-    // (titulo, autor_id, categoria_id, isbn, anio_publicacion)
+
     const libroParaEnviar: Libro = {
       titulo: this.nuevoLibro.titulo!,
       autor_id: this.nuevoLibro.autor_id ? Number(this.nuevoLibro.autor_id) : null,
-      categoria_id: this.nuevoLibro.categoria_id ? Number(this.nuevoLibro.categoria_id) : null,
-      isbn: this.nuevoLibro.isbn || null,
-      anio_publicacion: this.nuevoLibro.anio_publicacion ? Number(this.nuevoLibro.anio_publicacion) : null
+      categoria_id: this.nuevoLibro.categoria_id ? Number(this.nuevoLibro.categoria_id) : null
     };
 
     this.libroService.crearLibro(libroParaEnviar).subscribe({

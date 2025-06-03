@@ -16,18 +16,15 @@ router.get("/", async (req, res) => {
 
 // Crear un autor
 router.post("/", async (req, res) => {
-    if (!req.kauth || !req.kauth.grant || !req.kauth.grant.access_token.hasRealmRole('admin')) {
-        return res.status(403).json({ error: "Acceso denegado: Se requiere rol de administrador." });
-    }
 
     try {
-        const { nombre, nacionalidad } = req.body; // Asumiendo que 'nacionalidad' es opcional
+        const { nombre } = req.body;
         if (!nombre) {
             return res.status(400).json({ error: "El campo 'nombre' es obligatorio" });
         }
         const result = await pool.query(
-            "INSERT INTO autores (nombre, nacionalidad) VALUES ($1, $2) RETURNING *",
-            [nombre, nacionalidad || null]
+            "INSERT INTO autores (nombre) VALUES ($1) RETURNING *",
+            [nombre]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -38,9 +35,6 @@ router.post("/", async (req, res) => {
 
 // Eliminar un autor
 router.delete("/:id", async (req, res) => {
-    if (!req.kauth || !req.kauth.grant || !req.kauth.grant.access_token.hasRealmRole('admin')) {
-        return res.status(403).json({ error: "Acceso denegado: Se requiere rol de administrador." });
-    }
 
     const { id } = req.params;
     try {
@@ -54,7 +48,5 @@ router.delete("/:id", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
-// Aquí irían las rutas PUT para actualizar autores, también protegidas por rol de admin.
 
 module.exports = router;

@@ -22,6 +22,8 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
+app.use(cors(corsOptions));
+
 app.use(
     session({
         secret: process.env.SESSION_SECRET || "clave-segura-por-defecto",
@@ -39,7 +41,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(cors(corsOptions));
 app.use(helmet());
 
 app.get("/", (req, res) => {
@@ -59,11 +60,11 @@ const multasRoutes = require("./routes/multas.routes");
 // Usar rutas con prefijos lógicos
 app.use("/auth", keycloak.protect(), authRoutes);
 app.use("/api/usuarios", keycloak.protect(), usuariosRoutes);
-app.use("/api/libros", keycloak.protect(), librosRoutes);
-app.use("/api/autores", keycloak.protect(), autoresRoutes);
-app.use("/api/categorias", keycloak.protect(), categoriasRoutes);
-app.use("/api/prestamos", keycloak.protect(),prestamosRoutes);
-app.use("/api/multas", keycloak.protect(),multasRoutes);
+app.use("/api/libros", librosRoutes);
+app.use("/api/autores", autoresRoutes);
+app.use("/api/categorias", categoriasRoutes);
+app.use("/api/prestamos", keycloak.protect(), prestamosRoutes);
+app.use("/api/multas", keycloak.protect(), multasRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Middleware para manejar rutas no encontradas (404)

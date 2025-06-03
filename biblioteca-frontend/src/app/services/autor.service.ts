@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Autor {
-  id?: any; // El ID puede ser asignado por el backend y es de tipo 'any'
+  id?: any;
   nombre: string;
 }
 

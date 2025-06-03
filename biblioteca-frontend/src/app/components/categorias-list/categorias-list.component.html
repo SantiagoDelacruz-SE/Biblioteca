@@ -25,14 +25,12 @@
     <table class="tabla-categorias">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nombre</th>
           <th *ngIf="authService.isAdmin$ | async">Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let categoria of categorias">
-          <td>{{ categoria.id }}</td>
           <td>{{ categoria.nombre }}</td>
           <td class="acciones" *ngIf="authService.isAdmin$ | async">
             <button (click)="eliminarCategoria(categoria.id)" class="btn-accion btn-eliminar" title="Eliminar categoría">

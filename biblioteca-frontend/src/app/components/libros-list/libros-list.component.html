@@ -41,18 +41,18 @@
          </div>
 
       <div class="form-group">
-        <label for="categoria_id">Categoría:</label>
-        <select id="categoria_id" name="categoria_id" [(ngModel)]="nuevoLibro.categoria_id" #categoria_id="ngModel">
-          <option [ngValue]="null">Seleccione una categoría (opcional)</option>
-          <option value="1">Ciencia Ficción (Ejemplo ID 1)</option> </select>
-        </div>
-
-      <div class="form-group">
-        <label for="isbn">ISBN:</label>
-        <input type="text" id="isbn" name="isbn" [(ngModel)]="nuevoLibro.isbn" #isbn="ngModel">
+        <label for="categoria_nombre">Categoría:</label>
+        <select id="categoria_nombre"
+                name="categoria_nombre"
+                [(ngModel)]="nuevoLibro.categoria_nombre"
+                #categoria_nombre="ngModel"
+                [class.invalid-input]="categoria_nombre.invalid && (categoria_nombre.dirty || categoria_nombre.touched)">
+          <option [ngValue]="null" disabled>Seleccione una categoría</option>
+          <option *ngFor="let categoria of todasLasCategorias" [value]="categoria.nombre">
+            {{ categoria.nombre }}
+          </option>
+        </select>
       </div>
-
-
       <div class="form-actions">
         <button type="submit" [disabled]="libroForm.invalid || cargando || cargandoDependencias" class="btn btn-guardar">
           {{ cargando ? 'Guardando...' : 'Guardar Libro' }}
@@ -78,9 +78,7 @@
       <div class="libro-info">
         <h3>{{ libro.titulo }}</h3>
         <p><strong>Autor:</strong> {{ libro.autor_nombre }}</p>
-        <p *ngIf="libro.categoria_nombre"><strong>Categoría:</strong> {{ libro.categoria_nombre }}</p>
-        <p *ngIf="libro.isbn"><strong>ISBN:</strong> {{ libro.isbn }}</p>
-        <p *ngIf="libro.anio_publicacion"><strong>Año:</strong> {{ libro.anio_publicacion }}</p>
+        
       </div>
       <div class="libro-actions" *ngIf="isAdmin$ | async">
         <button (click)="solicitarEliminarLibro(libro.id)" class="btn btn-eliminar" [disabled]="cargando">

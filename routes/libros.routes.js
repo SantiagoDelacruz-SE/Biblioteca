@@ -4,9 +4,6 @@ const pool = require("../config/database");
 
 const router = express.Router();
 
-// Obtener todos los libros
-// Esta ruta está protegida por keycloak.protect() en server.js,
-// por lo que cualquier usuario autenticado puede ver los libros.
 router.get("/", async (req, res) => {
     try {
         const result = await pool.query(`
@@ -27,25 +24,14 @@ router.get("/", async (req, res) => {
 
 // Crear un libro (SOLO USUARIOS CON ROL 'admin')
 router.post("/", async (req, res) => {
-    // Verificación de rol de administrador
-    // req.kauth.grant contiene la información del token decodificado por keycloak-connect
-    if (!req.kauth || !req.kauth.grant || !req.kauth.grant.access_token.hasRealmRole('admin')) {
-        // Si tu rol 'admin' es un rol de cliente para 'biblioteca-backend', usa:
-        // !req.kauth.grant.access_token.hasClientRole('biblioteca-backend', 'admin')
-        return res.status(403).json({ error: "Acceso denegado: Se requiere rol de administrador." });
-    }
-
+    
     try {
         const { titulo, autor_id, categoria_id, isbn, anio_publicacion } = req.body;
 
         if (!titulo) {
             return res.status(400).json({ error: "El campo 'titulo' es obligatorio" });
         }
-        // IMPORTANTE: El frontend envía 'autor_nombre'. El backend espera 'autor_id'.
-        // Esta es una discrepancia que se debe resolver para que la creación funcione.
-        // Por ahora, asumimos que el frontend enviará un 'autor_id' válido.
-        // Si no se envía autor_id, y la columna en la BD no lo permite nulo, fallará.
-        if (!autor_id && titulo) { // Ejemplo de validación si autor_id fuera obligatorio
+        if (!autor_id && titulo) {
              console.warn("Advertencia: Se está creando un libro sin autor_id. Titulo:", titulo);
         }
 
@@ -57,7 +43,6 @@ router.post("/", async (req, res) => {
             [titulo, autor_id || null, categoria_id || null, isbn || null, anio_publicacion || null]
         );
 
-        // Para devolver el libro con nombre de autor y categoría como en el GET
         const newBookId = result.rows[0].id;
         const newBookDetails = await pool.query(`
             SELECT 
@@ -77,13 +62,8 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Eliminar un libro (SOLO USUARIOS CON ROL 'admin')
-router.delete("/:id", async (req, res) => {
-    // Verificación de rol de administrador
-    if (!req.kauth || !req.kauth.grant || !req.kauth.grant.access_token.hasRealmRole('admin')) {
-        return res.status(403).json({ error: "Acceso denegado: Se requiere rol de administrador." });
-    }
 
+router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     try {
         const result = await pool.query("DELETE FROM libros WHERE id = $1 RETURNING *", [id]);
@@ -99,6 +79,5 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-// Aquí irían las rutas PUT para actualizar, también protegidas por rol de admin.
 
 module.exports = router;

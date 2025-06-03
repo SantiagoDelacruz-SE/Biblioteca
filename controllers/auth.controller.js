@@ -9,7 +9,8 @@ const register = async (req, res) => {
             client_id: "biblioteca-backend",
             username: "admin",
             password: "admin",
-            grant_type: "password"
+            grant_type: "password",
+            scope: "openid profile email"
         }), {
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
         });

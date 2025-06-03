@@ -9,11 +9,8 @@ export interface Libro {
   titulo: string;
   autor_id?: number | null; // Para la selección en el formulario
   autor_nombre?: string;    // Para mostrar en la lista
-  categoria_id?: number | null; // Para la selección en el formulario
-  categoria_nombre?: string;  // Para mostrar en la lista
-  isbn?: string | null;
-  anio_publicacion?: number | null;
-  // Añade aquí otras propiedades que tus libros puedan tener
+  categoria_id?: number | null;
+  categoria_nombre?: string;
 }
 
 @Injectable({
