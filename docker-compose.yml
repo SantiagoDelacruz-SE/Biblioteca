@@ -62,6 +62,16 @@ services:
     volumes:
       - .:/usr/src/app
 
+  frontend:
+    build: ./biblioteca-frontend
+    container_name: librisnet
+    ports:
+      - "4200:80" 
+    depends_on:
+      - app
+    networks:
+      - biblioteca-network
+
   # Servicio para la base de datos PostgreSQL de la aplicación
   db:
     image: postgres:latest
